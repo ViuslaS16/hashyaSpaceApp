@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashya's Space</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        /* Font Imports handled by @import in JS style block */
+
+        /* CSS Variables for Hello Kitty Theme */
+        :root {
+            --hk-pink: #FFC0CB; /* Light Pink */
+            --hk-dark-pink: #FF69B4; /* Hot Pink */
+            --hk-white: #FFFFFF;
+            --hk-light-gray: #F0F0F0;
+            --hk-red: #E03B8A; /* Hello Kitty bow red / button hover */
+            --hk-text-color: #333333;
+            --hk-btn-hover-dark: #cc54a2; /* Slightly darker pink for button hover */
+            --hk-bg-pink-100: #FCE7F0; /* Equivalent to Tailwind bg-pink-100 */
+            --hk-pink-50: #FFF5F7; /* Equivalent to Tailwind bg-pink-50 */
+            --hk-pink-300: #F9A8D4; /* Equivalent to Tailwind border-pink-300 */
+            --hk-pink-400: #F472B6; /* Equivalent to Tailwind bg-pink-400 */
+            --hk-pink-500: #EC4899; /* Equivalent to Tailwind bg-pink-500 */
+            --hk-gray-300: #D1D5DB; /* Equivalent to Tailwind bg-gray-300 */
+            --hk-gray-400: #9CA3AF; /* Equivalent to Tailwind bg-gray-400 */
+            --hk-gray-500: #6B7280; /* Equivalent to Tailwind hover:bg-gray-500 */
+            --hk-red-500: #EF4444; /* Equivalent to Tailwind text-red-500 */
+            --hk-gray-800: #1F2937; /* Equivalent to Tailwind text-gray-800 */
+            --hk-pink-200: #FBCFE8; /* Lighter pink for borders */
+        }
+
+        /* General Body and Container Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            color: var(--hk-text-color);
+        }
+
+        .app-container {
+            min-height: 100vh;
+            background-color: var(--hk-bg-pink-100);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px; /* Reduced padding for small screens */
+            position: relative;
+            overflow: hidden;
+            text-align: center; /* Center content horizontally */
+        }
+
+        .main-content-card {
+            background-color: var(--hk-white);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px; /* Stays fixed max-width */
+            padding: 20px; /* Reduced padding for small screens */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Adjusted gap */
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.2rem; /* Adjusted for smaller screens */
+            color: var(--hk-pink-500);
+            margin-bottom: 15px; /* Adjusted margin */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Hello Kitty Icon */
+        .hello-kitty-icon-container {
+            width: 70px; /* Adjusted size */
+            height: 70px; /* Adjusted size */
+            margin: 0 auto 10px auto; /* Adjusted margin */
+        }
+        .hello-kitty-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Watermarks */
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-repeat: repeat;
+            background-size: 100px 100px;
+            opacity: 0.1;
+        }
+        .watermark-center {
+            background-position: center;
+        }
+        .watermark-right-bottom {
+            background-position: right bottom;
+        }
+        .watermark-left-top {
+            background-position: left top;
+        }
+
+
+        /* Input Fields */
+        .input-field {
+            width: 100%;
+            padding: 10px 15px; /* Adjusted padding */
+            border: 2px solid var(--hk-pink-300);
+            border-radius: 8px;
+            font-size: 0.95rem; /* Adjusted font size */
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+        .input-field:focus {
+            border-color: var(--hk-pink-500);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Primary Buttons */
+        .primary-btn {
+            background-color: var(--hk-pink-500);
+            color: var(--hk-white);
+            padding: 10px 20px; /* Adjusted padding */
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem; /* Adjusted font size */
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Adjusted shadow */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .primary-btn:hover {
+            background-color: var(--hk-red);
+            transform: translateY(-2px);
+        }
+        .primary-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .primary-btn:disabled {
+            background-color: var(--hk-btn-hover-dark);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Login Section */
+        .login-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* Adjusted gap */
+        }
+        .login-error-message {
+            font-size: 0.8rem; /* Adjusted font size */
+            color: var(--hk-red-500);
+            margin-top: 5px; /* Adjusted margin */
+        }
+
+        /* Chat Section */
+        .chat-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* Adjusted gap */
+        }
+        .chat-messages {
+            background-color: var(--hk-pink-50);
+            border: 2px solid var(--hk-pink-300);
+            border-radius: 8px;
+            padding: 10px; /* Adjusted padding */
+            overflow-y: auto;
+            height: 300px; /* Adjusted for smaller screens */
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Adjusted gap */
+            scroll-behavior: smooth; /* Smooth scrolling */
+        }
+        .message {
+            padding: 10px; /* Adjusted padding */
+            border-radius: 10px; /* Adjusted border-radius */
+            max-width: 85%; /* Increased max-width for better use of space */
+            word-wrap: break-word;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease-out; /* Animation from previous */
+        }
+        .user-message {
+            background-color: var(--hk-pink-300);
+            color: var(--hk-white);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px; /* Adjusted radius */
+        }
+        .bot-message {
+            background-color: var(--hk-white);
+            color: var(--hk-gray-800);
+            align-self: flex-start;
+            border: 1px solid var(--hk-pink-200);
+            border-bottom-left-radius: 5px; /* Adjusted radius */
+        }
+
+        /* Feature Buttons Grid */
+        .feature-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Default to 1 column on small screens */
+            gap: 10px; /* Adjusted gap */
+        }
+        /* Medium screens (e.g., tablets) */
+        @media (min-width: 500px) {
+            .feature-buttons-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            }
+        }
+        /* Large screens (e.g., desktops) */
+        @media (min-width: 768px) {
+            .feature-buttons-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            }
+             .main-content-card {
+                padding: 30px; /* Restore larger padding on wider screens */
+            }
+            .app-title {
+                font-size: 2.5rem; /* Restore larger font size */
+                margin-bottom: 20px;
+            }
+            .hello-kitty-icon-container {
+                width: 80px; /* Restore larger icon size */
+                height: 80px;
+                margin-bottom: 16px;
+            }
+            .input-field {
+                padding: 12px 18px; /* Restore larger padding */
+                font-size: 1rem;
+            }
+            .primary-btn {
+                padding: 12px 24px; /* Restore larger padding */
+                font-size: 1.125rem;
+            }
+            .chat-messages {
+                height: 384px; /* Restore original height */
+                padding: 16px;
+            }
+            .message {
+                padding: 12px;
+                border-radius: 12px;
+                max-width: 80%;
+            }
+            .user-message {
+                border-bottom-right-radius: 8px;
+            }
+            .bot-message {
+                border-bottom-left-radius: 8px;
+            }
+        }
+
+        .feature-btn {
+            background-color: var(--hk-pink-400);
+            color: var(--hk-white);
+            padding: 8px 10px; /* Adjusted padding */
+            border-radius: 8px;
+            font-size: 0.8rem; /* Adjusted font size */
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-align: center; /* Ensure text is centered */
+        }
+        .feature-btn:hover {
+            background-color: var(--hk-pink-500);
+        }
+        .feature-btn:disabled {
+            background-color: var(--hk-btn-hover-dark);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Chat Input Area */
+        .chat-input-area {
+            display: flex;
+            gap: 10px; /* Adjusted gap */
+            margin-top: 10px; /* Adjusted margin */
+        }
+        .chat-input {
+            flex-grow: 1;
+        }
+        .send-btn {
+            padding: 10px 18px; /* Adjusted padding */
+            font-size: 0.95rem; /* Adjusted font size */
+        }
+
+        /* Loading Spinner */
+        .loading-spinner-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px; /* Adjusted margin */
+        }
+        .loading-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--hk-dark-pink);
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            margin-top: 15px; /* Adjusted margin */
+            background-color: var(--hk-gray-400);
+            color: var(--hk-white);
+            padding: 10px 20px; /* Adjusted padding */
+            border-radius: 8px;
+            font-size: 1rem; /* Adjusted font size */
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .logout-btn:hover {
+            background-color: var(--hk-gray-500);
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 10px; /* Adjusted padding */
+        }
+        .modal-content {
+            background-color: var(--hk-white);
+            border-radius: 12px;
+            padding: 20px; /* Adjusted padding */
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px; /* Adjusted max-width */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* Adjusted gap */
+        }
+        .modal-title {
+            font-size: 1.15rem; /* Adjusted font size */
+            font-weight: 600;
+            color: var(--hk-pink-500);
+        }
+        .modal-description {
+            color: var(--hk-gray-700);
+            font-size: 0.85rem; /* Adjusted font size */
+        }
+        .modal-input {
+            /* Uses .input-field styles */
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px; /* Adjusted gap */
+        }
+        .modal-cancel-btn, .modal-generate-btn {
+            padding: 6px 12px; /* Adjusted padding */
+            border-radius: 6px; /* Adjusted border-radius */
+            font-size: 0.8rem; /* Adjusted font size */
+        }
+        .modal-cancel-btn {
+            background-color: var(--hk-gray-300);
+            color: var(--hk-gray-800);
+            transition: background-color 0.3s ease;
+        }
+        .modal-cancel-btn:hover {
+            background-color: var(--hk-gray-400);
+        }
+        .modal-generate-btn {
+            background-color: var(--hk-pink-500);
+            color: var(--hk-white);
+            transition: background-color 0.3s ease;
+        }
+        .modal-generate-btn:hover {
+            background-color: var(--hk-pink-600);
+        }
+        .modal-generate-btn:disabled {
+            background-color: var(--hk-btn-hover-dark);
+            cursor: not-allowed;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Hello Kitty watermarks -->
+        <div class="watermark watermark-center" style="background-image: url('icons8-hello-kitty-100.png');"></div>
+        <div class="watermark watermark-right-bottom" style="background-image: url('icons8-hello-kitty-100.png');"></div>
+        <div class="watermark watermark-left-top" style="background-image: url('icons8-hello-kitty-100.png');"></div>
+
+        <div class="main-content-card">
+            <!-- Hello Kitty Icon -->
+            <div class="hello-kitty-icon-container">
+                <img src="icons8-hello-kitty-80.png" alt="Hello Kitty Icon" class="hello-kitty-icon">
+            </div>
+
+            <h1 class="app-title">Hashya's Space</h1>
+
+            <!-- Login Section -->
+            <div id="login-section" class="login-section">
+                <input type="text" id="username-input" class="input-field" placeholder="Username">
+                <input type="password" id="password-input" class="input-field" placeholder="Password">
+                <button id="login-btn" class="primary-btn">Enter Hashya's Space</button>
+                <p id="login-message" class="login-error-message"></p>
+            </div>
+
+            <!-- Chat Section -->
+            <div id="chat-section" class="chat-section" style="display: none;">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Messages will be appended here -->
+                </div>
+
+                <div class="feature-buttons-grid">
+                    <button id="generate-compliment-btn" class="feature-btn">✨ Sweet Message</button>
+                    <button id="suggest-date-btn" class="feature-btn">✨ Date Idea</button>
+                    <button id="write-poem-btn" class="feature-btn">✨ Short Poem</button>
+                    <button id="mood-booster-btn" class="feature-btn">✨ Mood Booster</button>
+                    <button id="story-starter-btn" class="feature-btn">✨ Story Starter</button>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="user-message-input" class="input-field chat-input" placeholder="Type your message...">
+                    <button id="send-message-btn" class="primary-btn send-btn">Send</button>
+                </div>
+                <div id="loading-spinner-container" class="loading-spinner-container" style="display: none;">
+                    <div class="loading-indicator"></div>
+                </div>
+                <button id="logout-btn" class="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <!-- Story Starter Modal -->
+        <div id="story-modal-overlay" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <h3 class="modal-title">Story Starter</h3>
+                <p class="modal-description">Enter a keyword or theme for the story:</p>
+                <input type="text" id="modal-prompt-input" class="input-field modal-input">
+                <div class="modal-actions">
+                    <button id="modal-cancel-btn" class="modal-cancel-btn">Cancel</button>
+                    <button id="modal-generate-btn" class="modal-generate-btn">Generate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Constants for login credentials and local storage keys
+        const USERNAME = 'hashya';
+        const PASSWORD = 'tobehashya';
+        const LOGGED_IN_KEY = 'hashyas_space_logged_in';
+        const CHAT_HISTORY_KEY = 'hashyas_space_chat_history';
+
+        // DOM Elements
+        const loginSection = document.getElementById('login-section');
+        const chatSection = document.getElementById('chat-section');
+        const usernameInput = document.getElementById('username-input');
+        const passwordInput = document.getElementById('password-input');
+        const loginBtn = document.getElementById('login-btn');
+        const loginMessage = document.getElementById('login-message');
+        const chatMessagesDiv = document.getElementById('chat-messages');
+        const userMessageInput = document.getElementById('user-message-input');
+        const sendMessageBtn = document.getElementById('send-message-btn');
+        const loadingSpinnerContainer = document.getElementById('loading-spinner-container');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Feature Buttons
+        const generateComplimentBtn = document.getElementById('generate-compliment-btn');
+        const suggestDateBtn = document.getElementById('suggest-date-btn');
+        const writePoemBtn = document.getElementById('write-poem-btn'); // Corrected to match ID
+        const moodBoosterBtn = document.getElementById('mood-booster-btn');
+        const storyStarterBtn = document.getElementById('story-starter-btn');
+
+        // Modal Elements
+        const storyModalOverlay = document.getElementById('story-modal-overlay');
+        const modalPromptInput = document.getElementById('modal-prompt-input');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalGenerateBtn = document.getElementById('modal-generate-btn');
+
+        let chatHistory = [];
+        let isLoading = false; // State variable for loading
+
+        // Utility function to set loading state
+        function setLoading(state) {
+            isLoading = state;
+            if (state) {
+                loadingSpinnerContainer.style.display = 'flex';
+            } else {
+                loadingSpinnerContainer.style.display = 'none';
+            }
+            // Disable/enable all interactive elements
+            const interactiveElements = [
+                userMessageInput, sendMessageBtn,
+                generateComplimentBtn, suggestDateBtn, writePoemBtn, moodBoosterBtn, storyStarterBtn,
+                loginBtn, usernameInput, passwordInput,
+                modalPromptInput, modalCancelBtn, modalGenerateBtn // Modal elements
+            ];
+            interactiveElements.forEach(el => {
+                if (el) el.disabled = state;
+            });
+        }
+
+        // Function to display messages in the chat window
+        function displayMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            if (sender === 'user') {
+                messageDiv.classList.add('user-message');
+            } else {
+                messageDiv.classList.add('bot-message');
+            }
+            messageDiv.textContent = message;
+            chatMessagesDiv.appendChild(messageDiv);
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight; // Scroll to bottom
+        }
+
+        // Function to load chat history from localStorage
+        function loadChatHistory() {
+            const history = localStorage.getItem(CHAT_HISTORY_KEY);
+            if (history) {
+                try {
+                    chatHistory = JSON.parse(history);
+                    chatHistory.forEach(msg => {
+                        displayMessage(msg.parts[0].text, msg.role);
+                    });
+                } catch (e) {
+                    console.error("Error parsing chat history from localStorage:", e);
+                    chatHistory = [];
+                }
+            } else {
+                chatHistory = [];
+            }
+        }
+
+        // Function to save chat history to localStorage
+        function saveChatHistory() {
+            localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
+        }
+
+        // Function to handle login
+        function handleLogin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if (username === USERNAME && password === PASSWORD) {
+                localStorage.setItem(LOGGED_IN_KEY, 'true');
+                showChatSection();
+            } else {
+                loginMessage.textContent = 'Invalid username or password. Please try again.';
+                loginMessage.style.display = 'block'; // Make error message visible
+            }
+        }
+
+        // Function to handle logout
+        function handleLogout() {
+            localStorage.removeItem(LOGGED_IN_KEY);
+            localStorage.removeItem(CHAT_HISTORY_KEY);
+            chatHistory = []; // Clear in-memory history
+            chatMessagesDiv.innerHTML = ''; // Clear chat display
+            userMessageInput.value = '';
+            showLoginSection();
+        }
+
+        // Function to show/hide sections
+        function showChatSection() {
+            loginSection.style.display = 'none';
+            chatSection.style.display = 'flex'; // Use flex for chat section
+            loadChatHistory();
+            userMessageInput.focus();
+        }
+
+        function showLoginSection() {
+            chatSection.style.display = 'none';
+            loginSection.style.display = 'flex'; // Use flex for login section
+            usernameInput.value = '';
+            passwordInput.value = '';
+            loginMessage.style.display = 'none'; // Hide error message
+            usernameInput.focus();
+        }
+
+        // Function to check for specific predefined responses
+        function getSpecificResponse(userMessage) {
+            const lowerCaseMessage = userMessage.toLowerCase();
+
+            if (lowerCaseMessage.includes('she is missing someone') ||
+                lowerCaseMessage.includes('i wanna talk with someone') ||
+                lowerCaseMessage.includes('i want to talk with someone') ||
+                lowerCaseMessage.includes('i feel lonely') ||
+                lowerCaseMessage.includes('need someone to talk to')) {
+                return "💖 It sounds like a hug from your favorite person would be perfect right now! Why don't you reach out to them and make your heart happy?";
+            }
+            return null; // No specific response found
+        }
+
+        // Generic function to call Gemini API
+        async function callGeminiAPI(payload, isFeature = false) {
+            setLoading(true);
+
+            try {
+                const apiKey = "AIzaSyBFpDhBVY84_wC4unN7dKnVo2TU7Y7Tzak"; // Canvas will automatically provide it at runtime.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const botResponse = result.candidates[0].content.parts[0].text;
+                    displayMessage(botResponse, 'model');
+                    // Add bot's response to chat history for persistence
+                    chatHistory.push({ role: 'model', parts: [{ text: botResponse }] });
+                } else {
+                    displayMessage('Oops! Hashya is thinking... Please try again.', 'model');
+                    console.error("Unexpected API response structure:", result);
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                displayMessage('An error occurred while Hashya was trying to respond. Please try again.', 'model');
+            } finally {
+                setLoading(false);
+                storyModalOverlay.style.display = 'none'; // Close modal if open
+                modalPromptInput.value = ''; // Clear modal input
+                userMessageInput.focus(); // Focus on chat input
+                saveChatHistory(); // Save history after each turn
+            }
+        }
+
+        // Function to send message (main chat)
+        async function sendMessage() {
+            const userMessage = userMessageInput.value.trim();
+            if (!userMessage) return;
+
+            displayMessage(userMessage, 'user');
+            userMessageInput.value = '';
+
+            // Check for specific responses first
+            const specificResponse = getSpecificResponse(userMessage);
+            if (specificResponse) {
+                displayMessage(specificResponse, 'model');
+                chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
+                chatHistory.push({ role: 'model', parts: [{ text: specificResponse }] });
+                saveChatHistory();
+                return; // Exit after specific response
+            }
+
+            // If no specific response, proceed with LLM
+            chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
+            await callGeminiAPI({ contents: chatHistory });
+        }
+
+        // Feature functions
+        function generateCompliment() {
+            displayMessage("✨ Generating a sweet message...", "user");
+            callGeminiAPI({ contents: [{ role: "user", parts: [{ text: "Generate a short, sweet, and unique compliment or affirmation for my girlfriend, Hashya. Make it heartfelt and simple. Keep it around 1-2 sentences." }] }] }, true);
+        }
+
+        function suggestDateIdea() {
+            displayMessage("✨ Brainstorming a date idea...", "user");
+            callGeminiAPI({ contents: [{ role: "user", parts: [{ text: "Suggest a cute, fun, and creative date idea for me and my girlfriend, Hashya. Keep it concise, about 1-3 sentences. Don't be generic, add a small unique twist." }] }] }, true);
+        }
+
+        function writeShortPoem() { // Renamed from writePoem to writeShortPoem (as per function name)
+            displayMessage("✨ Writing a short poem...", "user");
+            callGeminiAPI({ contents: [{ role: "user", parts: [{ text: "Write a very short, sweet, and simple poem (2-4 lines) for my girlfriend, Hashya. Focus on themes of love, joy, or her wonderful qualities." }] }] }, true);
+        }
+
+        function moodBooster() {
+            displayMessage("✨ Getting a mood boost...", "user");
+            callGeminiAPI({ contents: [{ role: "user", parts: [{ text: "Provide a short, comforting, and uplifting message for someone who might be feeling down or needs a little cheer. Keep it positive and concise." }] }] }, true);
+        }
+
+        function storyStarter() {
+            storyModalOverlay.style.display = 'flex'; // Show modal
+            modalPromptInput.focus(); // Focus input in modal
+        }
+
+        async function handleModalGenerate() {
+            const promptText = modalPromptInput.value.trim();
+            if (!promptText) return;
+
+            displayMessage(`✨ Starting a story about: ${promptText}...`, "user");
+            await callGeminiAPI({ contents: [{ role: "user", parts: [{ text: `Generate a very short, cute, and sweet story starter (1-3 sentences) based on the theme: "${promptText}". Make it enchanting.` }] }] }, true);
+            storyModalOverlay.style.display = 'none'; // Hide modal after call
+            modalPromptInput.value = ''; // Clear modal input
+        }
+
+        // Event Listeners
+        window.onload = function() {
+            const isLoggedIn = localStorage.getItem(LOGGED_IN_KEY) === 'true';
+            if (isLoggedIn) {
+                showChatSection();
+            } else {
+                showLoginSection();
+            }
+        };
+
+        loginBtn.addEventListener('click', handleLogin);
+        logoutBtn.addEventListener('click', handleLogout);
+        sendMessageBtn.addEventListener('click', sendMessage);
+
+        // Enter key listeners
+        usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') passwordInput.focus(); });
+        passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
+        userMessageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        modalPromptInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleModalGenerate(); });
+
+        // Feature button listeners
+        generateComplimentBtn.addEventListener('click', generateCompliment);
+        suggestDateBtn.addEventListener('click', suggestDateIdea);
+        writePoemBtn.addEventListener('click', writeShortPoem); // Corrected function call
+        moodBoosterBtn.addEventListener('click', moodBooster);
+        storyStarterBtn.addEventListener('click', storyStarter);
+
+        // Modal button listeners
+        modalCancelBtn.addEventListener('click', () => {
+            storyModalOverlay.style.display = 'none';
+            modalPromptInput.value = '';
+            userMessageInput.focus(); // Return focus to chat input
+        });
+        modalGenerateBtn.addEventListener('click', handleModalGenerate);
+
+    </script>
+</body>
+</html>
